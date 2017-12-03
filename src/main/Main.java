@@ -23,9 +23,10 @@ public class Main {
     
     public static void displayOptionsForAdmin() {
         System.out.println("Option 1: Create a new username list.");
-        System.out.println("Option 2: Add a new user to the existing username list.");
+        System.out.println("Option 2: Add a new user to the existing username list");
         System.out.println("Option 3: View all existing users");
         System.out.println("Option 4: Exit");
+        System.out.println();
     }
     
     public static boolean login() {
@@ -50,9 +51,11 @@ public class Main {
         switch (userOrAdmin) {
             case 1:
                 runUserMenu();
+                break;
             
             case 2:
                 runAdminMenu();
+                break;
         }
     }
     
@@ -101,13 +104,25 @@ public class Main {
     
     public static void seeAllUsersInExistingList() {
         UsernameList usernamelist = UsernameListDAO.loadExistingUsernameList();
-        Map<String, String> list = usernamelist.getUserList();
-        for (String user: list.keySet()) {
-            System.out.println(user + "   " + list.get(user));
-        }
+        
+        usernamelist.printAllUserAndPassword();
     }
     
     public static void runUserMenu() {
+        boolean correctUsernameAndPassword = false;
+        
+        do {
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Please enter your username! >");
+            String username = sc.next();
+            System.out.print("Please enter your password! >");
+            String password = sc.next();
+            
+            UsernameList usernamelist = UsernameListDAO.loadExistingUsernameList();
+                        
+            correctUsernameAndPassword = usernamelist.checkUsernamePassword(username, password);
+        } while (!correctUsernameAndPassword);
+        
         
         int option;
         do {

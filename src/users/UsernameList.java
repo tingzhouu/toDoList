@@ -32,4 +32,10 @@ public class UsernameList implements Serializable{
         
         return true;
     }
+    
+    public void printAllUserAndPassword() {
+        for (String user: userList.keySet()) {
+            System.out.println(user + "   " + userList.get(user));
+        }
+    }
 }
