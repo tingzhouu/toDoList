@@ -13,31 +13,25 @@ public class Main {
     }
     
     public static void displayOptionsForUser() {
-        System.out.println("Hello! This is your To-Do List!");
+        System.out.println("=========================");
+        System.out.println("Hello user! What would you like to do today?");
         System.out.println("Option 1: View your list");
         System.out.println("Option 2: Add a new item to the list");
         System.out.println("Option 3: Delete the existing list and create a new one");
         System.out.println("Option 4: Exit");
+        System.out.println("=========================");
         System.out.println();
     }
     
     public static void displayOptionsForAdmin() {
-        System.out.println("Option 1: Create a new username list.");
+        System.out.println("=========================");
+        System.out.println("Hello admin! What would you like to do today?");
+        System.out.println("Option 1: Delete the existing username list and create a new one");
         System.out.println("Option 2: Add a new user to the existing username list");
         System.out.println("Option 3: View all existing users");
         System.out.println("Option 4: Exit");
+        System.out.println("=========================");
         System.out.println();
-    }
-    
-    public static boolean login() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Hello! Please enter your username!");
-        String username = sc.next();
-        
-        System.out.println("Your password?");
-        String password = sc.next();
-        
-        return UsernameListDAO.loadExistingUsernameList().checkUsernamePassword(username, password);
     }
     
     public static void start() {
@@ -100,6 +94,8 @@ public class Main {
         UsernameList usernamelist = UsernameListDAO.loadExistingUsernameList();
         usernamelist.addUser(username, password);
         UsernameListDAO.saveExistingUsernameList(usernamelist);
+        
+        ToDoListDAO.saveUserToDoList(username, new ToDoList());
     }
     
     public static void seeAllUsersInExistingList() {
@@ -110,17 +106,25 @@ public class Main {
     
     public static void runUserMenu() {
         boolean correctUsernameAndPassword = false;
+        String username;
+        String password;
         
         do {
             Scanner sc = new Scanner(System.in);
             System.out.print("Please enter your username! >");
-            String username = sc.next();
+            username = sc.next();
             System.out.print("Please enter your password! >");
-            String password = sc.next();
+            password = sc.next();
+            System.out.println();
             
             UsernameList usernamelist = UsernameListDAO.loadExistingUsernameList();
                         
             correctUsernameAndPassword = usernamelist.checkUsernamePassword(username, password);
+            
+            if (!correctUsernameAndPassword) {
+                System.out.println("Invalid username or password, please try again!");
+            }
+            
         } while (!correctUsernameAndPassword);
         
         
@@ -137,15 +141,15 @@ public class Main {
             switch (option) {
                 
                 case 1:
-                    runOption1();
+                    runOption1(username);
                     break;
                 
                 case 2:
-                    runOption2();
+                    runOption2(username);
                     break;
                 
                 case 3:
-                    runOption3();
+                    runOption3(username);
                     break;
             }
         } while (option != 4);
@@ -153,13 +157,13 @@ public class Main {
         System.out.println("Have a nice day!");
     }
     
-    public static void runOption1() {
-        ToDoList list = ToDoListDAO.loadUserToDoList("zhou");
+    public static void runOption1(String username) {
+        ToDoList list = ToDoListDAO.loadUserToDoList(username);
         System.out.println(list.toString());        
     }
     
-    public static void runOption2() {
-        ToDoList list = ToDoListDAO.loadUserToDoList("zhou");
+    public static void runOption2(String username) {
+        ToDoList list = ToDoListDAO.loadUserToDoList(username);
         
         Scanner sc = new Scanner(System.in);
         System.out.print("Please enter due date of to-do item (YYYYMMDD)> ");
@@ -171,11 +175,11 @@ public class Main {
         ItemInList newItem = new ItemInList(dateEntered, descriptionEntered);
         list.addItem(newItem);
         
-        ToDoListDAO.saveUserToDoList("zhou" ,list);
+        ToDoListDAO.saveUserToDoList(username, list);
     }
     
-    public static void runOption3() {
+    public static void runOption3(String username) {
         ToDoList newList = new ToDoList();
-        ToDoListDAO.saveUserToDoList("zhou", newList);
+        ToDoListDAO.saveUserToDoList(username, newList);
     }
 }

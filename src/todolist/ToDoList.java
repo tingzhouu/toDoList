@@ -24,6 +24,10 @@ public class ToDoList implements Serializable {
     }
     
     public String toString() {
+        if (list.size() == 0) {
+            return "There are no to-do entries in this list!" + "\n";
+        }
+        
         String output = "";
         for (ItemInList item: list) {
             output += item.toString() + "\n\n";
